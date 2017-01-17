@@ -33,6 +33,18 @@ class PageObject(object):
         """
         root_uri = self.root_uri or ''
         self.w.get(root_uri + uri)
+        
+    def waitFor(self, condition, timeout=5):
+        wait = WebDriverWait(self.w, timeout)
+        return wait.until(condition)
+        
+    def waitForIsDisplayed(self, locater, timeout=5):
+        try:
+            self.waitFor(EC.visibility_of_element_is_located(*locator)
+        except TimeoutException:
+            return False
+        else:
+            return True
 
 
 class PageElement(object):
