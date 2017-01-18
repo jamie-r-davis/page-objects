@@ -1,5 +1,7 @@
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 # Map PageElement constructor arguments to webdriver locator enums
@@ -80,10 +82,13 @@ class PageElement(object):
         self.has_context = bool(context)
 
     def find(self, context):
+        """Wait for element to be visible and return element"""
         try:
-            return context.find_element(*self.locator)
-        except NoSuchElementException:
+            WebDriverWait(context, 30).until(EC.visibility_of_element_located(self.locator))
+        except TimeoutException:
             return None
+        else:
+            return context.find_element(*self.locator)
 
     def __get__(self, instance, owner, context=None):
         if not instance:
